@@ -1,4 +1,5 @@
-matplotlib
-openai
-pandas
-python-dotenv
+requests>=2.31
+pandas>=2.0
+matplotlib>=3.8
+python-dotenv>=1.0
+openai>=1.0
