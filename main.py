@@ -21,7 +21,7 @@ def kompakt(rangliste):
         {
             "lieferant": a["lieferant"],
             "land": a["land"],
-            "preis": round(a["einzelpreis_eur"], 2),
+            "preis": round(a["einzelpreis_eur"], 4 if a["einzelpreis_eur"] < 1 else 2),
             "lieferzeit_tage": a["lieferzeit_tage"],
             "qualitaet": a["qualitaet"],
             "liefertreue_prozent": a["liefertreue_prozent"],
