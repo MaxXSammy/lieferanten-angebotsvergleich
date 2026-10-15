@@ -34,11 +34,9 @@ def kompakt(rangliste):
 def ersatz_empfehlung(rangliste):
     """Einfache Empfehlung ohne KI – falls die API nicht erreichbar ist."""
     erster = rangliste[0]
-    text = (
-        f"Empfehlung: {erster['lieferant']} (Score {erster['score']}) – "
-        f"{erster['preis']:.2f} € je Einheit,{erster['lieferzeit_tage']} Tage Lieferzeit, "
-        f"Qualität {erster['qualitaet']}/5."
-    )
+    text = (f"Empfehlung: {erster['lieferant']} (Score {erster['score']}) – "
+            f"{erster['preis']:.4g} € je Einheit, {erster['lieferzeit_tage']} Tage Lieferzeit, "
+            f"Qualität {erster['qualitaet']}/5.")
     if len(rangliste) > 1:
         zweiter = rangliste[1]
         text += f" Alternative: {zweiter['lieferant']} (Score {zweiter['score']})."
@@ -101,10 +99,10 @@ def main():
         zeige_tabelle(rangliste)
         zeige_diagramm(rangliste)
 
-        empfehlung = erstelle_empfehlung(rangliste[:5])  # Top 5 reichen der KI
+        empfehlung = erstelle_empfehlung(rangliste[:5])   # Top 5 reichen der KI
         if not empfehlung:
             ersatz_empfehlung(rangliste)
 
 
 if __name__ == "__main__":
-    main()  # main.py - verbindet alle Module (gemeinsam)
+    main()

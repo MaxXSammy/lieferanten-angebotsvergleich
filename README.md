@@ -22,8 +22,11 @@ Dieses Tool beantwortet die Frage: **Welcher Lieferant ist unterm Strich das bes
 - ⚖️ **Gewichtete Mehrkriterien-Bewertung** – Preis, Lieferzeit, Qualität, Liefertreue und Reklamationsquote, frei konfigurierbar in `config.py`
 - 📊 **Rangliste & Diagramm** pro Artikel
 - 🤖 **KI-Kaufempfehlung** mit GPT-4o – inkl. Ersatz-Empfehlung, falls die KI nicht verfügbar ist
+- 🖥️ **Web-Oberfläche** mit Streamlit – CSV hochladen, Gewichte per Schieberegler anpassen, Ergebnis live sehen
 
 ## 🖼️ Beispiel
+
+![Web-App](screenshot_app.png)
 
 ![Rangliste](rangliste.png)
 
@@ -72,7 +75,12 @@ OPENAI_API_KEY=sk-...
 ```
 *(Ohne Key läuft das Programm trotzdem – dann mit einer Empfehlung ohne KI.)*
 
-Starten:
+Starten – als **Web-App**:
+```bash
+streamlit run app.py
+```
+
+…oder im **Terminal**:
 ```bash
 python main.py                                  # Standard-Testdaten
 python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
@@ -81,7 +89,8 @@ python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
 ## 📁 Projektstruktur
 
 ```
-├── main.py                  # Ablaufsteuerung & Menü
+├── app.py                   # Web-Oberfläche (Streamlit)
+├── main.py                  # Terminal-Version mit Menü
 ├── config.py                # Kriterien, Gewichte, API-Einstellungen
 ├── daten_laden.py           # CSV laden, reparieren, validieren
 ├── waehrung.py              # Wechselkurs-API → Umrechnung in EUR
@@ -106,7 +115,7 @@ python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
 
 - 🗺️ **Entfernungs-API** (OpenStreetMap) – Transportweg zum Werk als zusätzliches Kriterium für Kosten & CO₂
 - 📤 Export der Rangliste als Excel
-- 🖥️ Web-Oberfläche mit Streamlit
+- ☁️ Online-Demo über Streamlit Community Cloud
 
 ## 👥 Team
 
@@ -114,8 +123,8 @@ Entstanden am Projekttag *Funktionen & Module* (16.10.2026) im Rahmen der Weiter
 
 | | Module |
 |---|---|
-| **Maximilian Schneider** · [@MaxXSammy](https://github.com/MaxXSammy) | `config.py`, `waehrung.py`, `bewertung.py`, `daten_laden.py`, `main.py` |
-| **Jonas** | `bericht.py`, `ki_zusammenfassung.py`, `main.py` |
+| **Maximilian Schneider** · [@MaxXSammy](https://github.com/MaxXSammy) | `config.py`, `waehrung.py`, `bewertung.py`, `daten_laden.py`, `main.py`, `app.py` |
+| **Jonas** · [@fthiele92](https://github.com/fthiele92) | `bericht.py`, `ki_zusammenfassung.py`, `main.py` |
 
 ---
 
