@@ -5,25 +5,58 @@ from config import API_URL, FALLBACK_KURSE, ZIELWAEHRUNG
 
 
 def hole_kurse(waehrungen):
-    """Gibt z. B. {"EUR": 1.0, "CZK": 0.0411, ...} zurück (1 Fremdwährung = x EUR)."""
-    # TODO 1: Die API mit requests.get() aufrufen
-    #         params: from=ZIELWAEHRUNG, to= die Währungen mit Komma verbunden
-    #         timeout nicht vergessen
-    # TODO 2: Aus der Antwort .json() -> "rates" holen
-    # TODO 3: Die API liefert EUR -> CZK (24.357). Du brauchst CZK -> EUR. Wie?
-    # TODO 4: "EUR": 1.0 ergänzen
-    # TODO 5: Alles in try/except – bei Fehler: Warnung ausgeben und FALLBACK_KURSE zurückgeben
-    pass
+    """Holt aktuelle Kurse von der Frankfurter API (EZB-Kurse).
+
+    Gibt z. B. {"EUR": 1.0, "CZK": 0.0411, ...} zurück
+    -> 1 Einheit Fremdwährung = x EUR.
+    Ist die API nicht erreichbar, werden die FALLBACK_KURSE aus config.py genutzt.
+    """
+    # EUR selbst muss nicht abgefragt werden
+    fremd = [w for w in waehrungen if w != ZIELWAEHRUNG]
+
+    try:
+        antwort = requests.get(
+            API_URL,
+            params={"from": ZIELWAEHRUNG, "to": ",".join(fremd)},
+            timeout=10,
+        )
+        antwort.raise_for_status()  # wirft Fehler bei 404, 500 usw.
+        daten = antwort.json()
+        rates = daten["rates"]  # z. B. {"CZK": 24.357, ...}  (1 EUR = x CZK)
+
+        # Umdrehen: 1 CZK = 1 / 24.357 EUR
+        kurse = {waehrung: 1 / kurs for waehrung, kurs in rates.items()}
+        kurse[ZIELWAEHRUNG] = 1.0
+
+        print(f"✓ Wechselkurse vom {daten['date']} geladen (EZB).")
+        return kurse
+
+    except (requests.RequestException, KeyError, ValueError) as fehler:
+        print(f"⚠ Wechselkurs-API nicht erreichbar ({fehler}) – nutze Notfall-Kurse.")
+        return FALLBACK_KURSE
 
 
 def rechne_in_euro(angebote, kurse):
     """Ergänzt jedes Angebot um einzelpreis_eur, gesamtpreis_eur und kurs."""
-    # TODO: Für jedes Angebot den passenden Kurs anhand von angebot["waehrung"] holen
-    #       und die beiden Preise umrechnen (auf 2 Nachkommastellen runden)
-    pass
+    for angebot in angebote:
+        waehrung = angebot["waehrung"]
+
+        if waehrung not in kurse:
+            print(
+                f"⚠ Unbekannte Währung '{waehrung}' bei {angebot['lieferant']} – übersprungen."
+            )
+            continue
+
+        kurs = kurse[waehrung]
+        angebot["kurs"] = round(kurs, 6)
+        angebot["einzelpreis_eur"] = round(angebot["einzelpreis"] * kurs, 4)
+        angebot["gesamtpreis_eur"] = round(angebot["gesamtpreis"] * kurs, 2)
+
+    return angebote
 
 
 if __name__ == "__main__":
+    # Schnelltest:  python waehrung.py
     kurse = hole_kurse(["CZK", "PLN", "CHF"])
     print(kurse)
 
@@ -33,8 +66,16 @@ if __name__ == "__main__":
             "einzelpreis": 56.87,
             "gesamtpreis": 28435.0,
             "waehrung": "CZK",
-        }
+        },
+        {
+            "lieferant": "Test GmbH",
+            "einzelpreis": 2.10,
+            "gesamtpreis": 1050.0,
+            "waehrung": "EUR",
+        },
     ]
-    print(
-        rechne_in_euro(test, kurse)
-    )  # erwartet: ca. 2.34 € / 1168 €# waehrung.py - Wechselkurs-API (Max)
+    for a in rechne_in_euro(test, kurse):
+        print(
+            f"{a['lieferant']:<15} {a['einzelpreis']:>8} {a['waehrung']}  ->  "
+            f"{a['einzelpreis_eur']:>6} EUR   (gesamt {a['gesamtpreis_eur']} EUR)"
+        )
