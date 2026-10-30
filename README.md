@@ -2,6 +2,7 @@
 
 **Python-Tool, das Lieferantenangebote in verschiedenen Währungen vergleichbar macht, nach gewichteten Kriterien bewertet und per KI eine Kaufempfehlung ausspricht.**
 
+[![CI](https://github.com/MaxXSammy/lieferanten-angebotsvergleich/actions/workflows/ci.yml/badge.svg)](https://github.com/MaxXSammy/lieferanten-angebotsvergleich/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?logo=openai&logoColor=white)
