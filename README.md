@@ -87,6 +87,12 @@ python main.py                                  # Standard-Testdaten
 python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
 ```
 
+Tests (laufen ohne Netzwerk und ohne API-Key, auch in der CI):
+```bash
+pip install pytest
+pytest -q
+```
+
 ## 📁 Projektstruktur
 
 ```
@@ -98,6 +104,7 @@ python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
 ├── bewertung.py             # Normalisierung, Scoring, Rangliste
 ├── bericht.py               # Tabelle & Balkendiagramm
 ├── ki_zusammenfassung.py    # KI-Empfehlung (OpenAI)
+├── tests/                   # pytest: Scoring, CSV-Reparatur, Wechselkurse
 └── daten/
     ├── angebote.csv             # 170 Angebote, 36 Lieferanten, 12 Artikel
     └── angebote_fehlerhaft.csv  # dieselben Daten mit ~50 Praxisfehlern
