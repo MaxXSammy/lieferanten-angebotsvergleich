@@ -1,31 +1,23 @@
-# 📦 Lieferanten-Angebotsvergleich
-
-**Python-Tool, das Lieferantenangebote in verschiedenen Währungen vergleichbar macht, nach gewichteten Kriterien bewertet und per KI eine Kaufempfehlung ausspricht.**
+# Lieferanten-Angebotsvergleich
 
 [![CI](https://github.com/MaxXSammy/lieferanten-angebotsvergleich/actions/workflows/ci.yml/badge.svg)](https://github.com/MaxXSammy/lieferanten-angebotsvergleich/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
-![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?logo=openai&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
 
----
+Ein Python-Tool, das Lieferantenangebote in verschiedenen Währungen vergleichbar macht, nach gewichteten Kriterien bewertet und per KI eine Kaufempfehlung ausspricht.
 
-## 💡 Das Problem
+## Das Problem
 
-Im strategischen Einkauf kommen Angebote für denselben Artikel von Lieferanten aus ganz Europa – in **EUR, CZK, PLN oder CHF**, mit unterschiedlichen Lieferzeiten, Qualitätsstufen und Liefertreuen. Der billigste Anbieter ist selten der beste.
+Im strategischen Einkauf kommen Angebote für denselben Artikel von Lieferanten aus ganz Europa, in EUR, CZK, PLN oder CHF, mit unterschiedlichen Lieferzeiten, Qualitätsstufen und Liefertreuen. Der billigste Anbieter ist selten der beste.
 
 Dieses Tool beantwortet die Frage: **Welcher Lieferant ist unterm Strich das beste Angebot?**
 
-## ✨ Features
+## Die Lösung
 
-- 📥 **Robuster CSV-Import** – repariert typische Formatfehler automatisch (`3,58` → `3.58`, `Kč` → `CZK`, deutsches Datumsformat …) und sortiert unbrauchbare Zeilen mit Begründung aus
-- 💱 **Live-Wechselkurse** über die [Frankfurter API](https://frankfurter.dev) (offizielle EZB-Kurse) – mit Notfall-Kursen, falls die API nicht erreichbar ist
-- ⚖️ **Gewichtete Mehrkriterien-Bewertung** – Preis, Lieferzeit, Qualität, Liefertreue und Reklamationsquote, frei konfigurierbar in `config.py`
-- 📊 **Rangliste & Diagramm** pro Artikel
-- 🤖 **KI-Kaufempfehlung** mit GPT-4o – inkl. Ersatz-Empfehlung, falls die KI nicht verfügbar ist
-- 🖥️ **Web-Oberfläche** mit Streamlit – CSV hochladen, Gewichte per Schieberegler anpassen, Ergebnis live sehen
-
-## 🖼️ Beispiel
+- **Robuster CSV-Import:** repariert typische Formatfehler automatisch (`3,58` → `3.58`, `Kč` → `CZK`, deutsches Datumsformat) und sortiert unbrauchbare Zeilen mit Begründung aus
+- **Live-Wechselkurse** über die [Frankfurter API](https://frankfurter.dev) (offizielle EZB-Kurse), mit Notfall-Kursen, falls die API nicht erreichbar ist
+- **Gewichtete Mehrkriterien-Bewertung:** Preis, Lieferzeit, Qualität, Liefertreue und Reklamationsquote, frei konfigurierbar in `config.py`
+- **Rangliste und Diagramm** pro Artikel
+- **KI-Kaufempfehlung** mit GPT-4o, mit regelbasierter Ersatz-Empfehlung, falls die KI nicht verfügbar ist
+- **Web-Oberfläche** mit Streamlit: CSV hochladen, Gewichte per Schieberegler anpassen, Ergebnis sofort sehen
 
 ![Web-App](screenshot_app.png)
 
@@ -41,15 +33,15 @@ Platz  Lieferant                 land  Preis (€)  Lieferzeit (Tage)  Qualität
 ...
 ```
 
-## ⚙️ So funktioniert's
+## Architektur
 
 ```mermaid
 flowchart LR
-    A[📄 CSV] --> B[daten_laden<br/>laden & prüfen]
-    B --> C[waehrung<br/>🌐 Wechselkurs-API]
+    A[CSV] --> B[daten_laden<br/>laden und prüfen]
+    B --> C[waehrung<br/>Wechselkurs-API]
     C --> D[bewertung<br/>gewichteter Score]
-    D --> E[bericht<br/>Tabelle & Diagramm]
-    D --> F[ki_zusammenfassung<br/>🌐 OpenAI-API]
+    D --> E[bericht<br/>Tabelle und Diagramm]
+    D --> F[ki_zusammenfassung<br/>OpenAI-API]
 ```
 
 **Bewertungslogik:** Jedes Kriterium wird pro Artikel per Min-Max-Normalisierung auf 0–1 skaliert (1 = bester Wert), mit seinem Gewicht multipliziert und aufsummiert. Verglichen wird immer nur innerhalb desselben Artikels.
@@ -62,7 +54,27 @@ flowchart LR
 | Liefertreue | 10 % | hoch |
 | Reklamationsquote | 10 % | niedrig |
 
-## 🚀 Installation & Start
+## Fehlerbehandlung
+
+| Situation | Reaktion |
+|---|---|
+| Formatfehler in der CSV (Komma, €, Leerzeichen, Datum) | wird automatisch repariert |
+| Unbrauchbare Werte (fehlender Preis, Qualität 9, Duplikate) | Zeile wird mit Begründung aussortiert |
+| Wechselkurs-API nicht erreichbar | Notfall-Kurse aus `config.py` |
+| KI nicht verfügbar oder kein API-Key | regelbasierte Ersatz-Empfehlung |
+
+## Tech-Stack
+
+| Bereich | Technologie |
+|---|---|
+| Sprache | Python 3.9+ |
+| Daten | pandas |
+| KI | OpenAI API (GPT-4o) |
+| Wechselkurse | Frankfurter API (EZB) |
+| Oberfläche | Streamlit |
+| Qualität | pytest, GitHub Actions |
+
+## Installation
 
 ```bash
 git clone https://github.com/MaxXSammy/lieferanten-angebotsvergleich.git
@@ -70,70 +82,70 @@ cd lieferanten-angebotsvergleich
 pip install -r requirements.txt
 ```
 
-Für die KI-Empfehlung eine `.env` anlegen:
-```
-OPENAI_API_KEY=sk-...
-```
-*(Ohne Key läuft das Programm trotzdem – dann mit einer Empfehlung ohne KI.)*
+Für die KI-Empfehlung eine `.env` mit `OPENAI_API_KEY=sk-...` anlegen. Ohne Key läuft das Programm trotzdem, dann mit der regelbasierten Empfehlung.
 
-Starten – als **Web-App**:
+## Nutzung
+
 ```bash
-streamlit run app.py
+streamlit run app.py                            # Web-Oberfläche
+python main.py                                  # Terminal mit Standard-Testdaten
+python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung mit fehlerhaften Daten
 ```
 
-…oder im **Terminal**:
-```bash
-python main.py                                  # Standard-Testdaten
-python main.py daten/angebote_fehlerhaft.csv    # Fehlerbehandlung live sehen
-```
+## Tests
 
-Tests (laufen ohne Netzwerk und ohne API-Key, auch in der CI):
 ```bash
 pip install pytest
 pytest -q
 ```
 
-## 📁 Projektstruktur
+Die Tests laufen ohne Netzwerk und ohne API-Key, auch in der CI.
+
+## Projektstruktur
 
 ```
-├── app.py                   # Web-Oberfläche (Streamlit)
-├── main.py                  # Terminal-Version mit Menü
-├── config.py                # Kriterien, Gewichte, API-Einstellungen
-├── daten_laden.py           # CSV laden, reparieren, validieren
-├── waehrung.py              # Wechselkurs-API → Umrechnung in EUR
-├── bewertung.py             # Normalisierung, Scoring, Rangliste
-├── bericht.py               # Tabelle & Balkendiagramm
-├── ki_zusammenfassung.py    # KI-Empfehlung (OpenAI)
-├── tests/                   # pytest: Scoring, CSV-Reparatur, Wechselkurse
-└── daten/
-    ├── angebote.csv             # 170 Angebote, 36 Lieferanten, 12 Artikel
-    └── angebote_fehlerhaft.csv  # dieselben Daten mit ~50 Praxisfehlern
+app.py                   # Web-Oberfläche (Streamlit)
+main.py                  # Terminal-Version mit Menü
+config.py                # Kriterien, Gewichte, API-Einstellungen
+daten_laden.py           # CSV laden, reparieren, validieren
+waehrung.py              # Wechselkurs-API, Umrechnung in EUR
+bewertung.py             # Normalisierung, Scoring, Rangliste
+bericht.py               # Tabelle und Balkendiagramm
+ki_zusammenfassung.py    # KI-Empfehlung (OpenAI)
+tests/                   # pytest: Scoring, CSV-Reparatur, Wechselkurse
+daten/
+├── angebote.csv             # 170 Angebote, 36 Lieferanten, 12 Artikel
+└── angebote_fehlerhaft.csv  # dieselben Daten mit ~50 Praxisfehlern
 ```
 
-## 🛡️ Fehlerbehandlung
+## Bekannte Grenzen
 
-| Situation | Reaktion |
-|---|---|
-| Formatfehler in der CSV (Komma, €, Leerzeichen, Datum) | wird automatisch repariert |
-| Unbrauchbare Werte (fehlender Preis, Qualität 9, Duplikate …) | Zeile wird mit Begründung aussortiert |
-| Wechselkurs-API nicht erreichbar | Notfall-Kurse aus `config.py` |
-| KI nicht verfügbar / kein API-Key | regelbasierte Ersatz-Empfehlung |
+- Die Min-Max-Normalisierung bewertet relativ: Kommt ein Angebot hinzu oder fällt eines weg, ändern sich die Scores aller anderen. Ein einzelner Ausreißer staucht die übrigen Werte zusammen, und bei nur einem Angebot erhält es automatisch den Score 1,0.
+- Verglichen wird der Einzelpreis. Mindestbestellmenge, Zahlungsziel, Zertifizierungen und Mengenstaffeln fließen nicht in den Score ein, ebenso wenig Logistik- und Wechselkosten.
+- Einheiten werden vereinheitlicht (`Stück` → `Stk`), aber nicht umgerechnet. Angebote für denselben Artikel in unterschiedlichen Einheiten (Stück und Meter) wären nicht vergleichbar. In den Testdaten kommt das nicht vor.
+- Abgelaufene Angebote werden nicht aussortiert. Geprüft wird nur, dass `gueltig_bis` nicht vor dem Angebotsdatum liegt.
+- Umgerechnet wird mit dem aktuellen EZB-Kurs, nicht mit dem Kurs zum Angebotsdatum. Die Notfall-Kurse in `config.py` sind fest hinterlegt und veralten, außerdem werden nur EUR, CZK, PLN und CHF unterstützt.
+- Die Qualitätsnote (1–5) ist eine Eingabe aus der CSV und damit so gut wie die Lieferantenbewertung, aus der sie stammt.
+- Die KI-Empfehlung wird nicht automatisch gegen die Rangliste geprüft. Der Prompt verbietet erfundene Zahlen, eine Kontrolle im Code gibt es aber nicht. Außerdem gehen die Top-5-Angebote dafür an die OpenAI-API, also an einen Cloud-Dienst.
+- Die Tests decken Bewertung, CSV-Import und Wechselkurse ab, nicht die KI-Empfehlung, die Berichte und die Oberfläche.
 
-## 🔭 Geplante Erweiterungen
+## Roadmap
 
-- 🗺️ **Entfernungs-API** (OpenStreetMap) – Transportweg zum Werk als zusätzliches Kriterium für Kosten & CO₂
-- 📤 Export der Rangliste als Excel
-- ☁️ Online-Demo über Streamlit Community Cloud
+- [ ] Entfernungs-API (OpenStreetMap): Transportweg zum Werk als zusätzliches Kriterium für Kosten und CO₂
+- [ ] Export der Rangliste als Excel
+- [ ] Online-Demo über Streamlit Community Cloud
 
-## 👥 Team
+## Team
 
 Entstanden am Projekttag *Funktionen & Module* (16.10.2026) im Rahmen der Weiterbildung zum AI Engineer.
 
 | | Module |
 |---|---|
 | **Maximilian Schneider** · [@MaxXSammy](https://github.com/MaxXSammy) | `config.py`, `waehrung.py`, `bewertung.py`, `daten_laden.py`, `main.py`, `app.py` |
-| **Jonas** · [@fthiele92](https://github.com/fthiele92) | `bericht.py`, `ki_zusammenfassung.py`, `main.py` |
+| **Florian** · [@fthiele92](https://github.com/fthiele92) | `bericht.py`, `ki_zusammenfassung.py`, `main.py` |
 
----
+Alle Lieferanten, Artikel und Preise in den Beispieldaten sind frei erfunden.
 
-<sub>ℹ️ Alle Lieferanten, Artikel und Preise in den Beispieldaten sind frei erfunden.</sub>
+## Lizenz
+
+MIT, siehe [LICENSE](LICENSE).
