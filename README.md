@@ -135,9 +135,9 @@ daten/
 - [ ] Export der Rangliste als Excel
 - [ ] Online-Demo über Streamlit Community Cloud
 
-## Team
+## Entstehung und Aufteilung
 
-Entstanden am Projekttag *Funktionen & Module* (16.10.2026) im Rahmen der Weiterbildung zum AI Engineer.
+Entstanden am Projekttag *Funktionen & Module* (16.10.2026) im Rahmen der Weiterbildung zum AI Engineer, als Zweierprojekt. Tests und CI kamen später dazu.
 
 | | Module |
 |---|---|
